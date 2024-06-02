@@ -19,6 +19,11 @@ app.use('/proxy', createProxyMiddleware({
   onProxyReq: (proxyReq, req, res) => {
     console.log('Proxying request to:', req.url);
   },
+  onProxyRes: (proxyRes, req, res) => {
+    proxyRes.headers['Access-Control-Allow-Origin'] = '*';
+    proxyRes.headers['Access-Control-Allow-Methods'] = 'GET,HEAD,PUT,PATCH,POST,DELETE';
+    proxyRes.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization';
+  },
   onError: (err, req, res) => {
     console.error('Error proxying request:', err);
     res.status(500).send('Proxy error');
