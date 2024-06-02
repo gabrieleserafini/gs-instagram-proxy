@@ -3,6 +3,7 @@ const axios = require('axios');
 
 const app = express();
 
+// Middleware per aggiungere intestazioni CORS a tutte le risposte
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
@@ -23,12 +24,14 @@ app.get('/image', async (req, res) => {
     const response = await axios({
       url: imageUrl,
       method: 'GET',
-      responseType: 'stream'
+      responseType: 'arraybuffer'
     });
 
-    res.setHeader('Content-Type', response.headers['content-type']);
+    const base64Image = Buffer.from(response.data, 'binary').toString('base64');
+    const mimeType = response.headers['content-type'];
+    const dataUrl = `data:${mimeType};base64,${base64Image}`;
 
-    response.data.pipe(res);
+    res.send(dataUrl);
   } catch (error) {
     console.error('Error fetching image:', error.message);
     res.status(500).send('Error fetching image');
