@@ -9,6 +9,13 @@ app.use('/proxy', createProxyMiddleware({
   pathRewrite: {
     '^/proxy': '',
   },
+  onProxyReq: (proxyReq, req, res) => {
+    console.log('Proxying request to:', req.url);
+  },
+  onError: (err, req, res) => {
+    console.error('Error proxying request:', err);
+    res.status(500).send('Proxy error');
+  }
 }));
 
 app.listen(3000, () => {
