@@ -11,7 +11,13 @@ app.use((req, res, next) => {
 });
 
 app.get('/image', async (req, res) => {
-  const imageUrl = req.query.url; 
+  const imageUrl = req.query.url;
+
+  if (!imageUrl) {
+    return res.status(400).send('URL is required');
+  }
+
+  console.log('Fetching image from URL:', imageUrl);
 
   try {
     const response = await axios({
@@ -24,7 +30,7 @@ app.get('/image', async (req, res) => {
 
     response.data.pipe(res);
   } catch (error) {
-    console.error('Error fetching image:', error);
+    console.error('Error fetching image:', error.message);
     res.status(500).send('Error fetching image');
   }
 });
